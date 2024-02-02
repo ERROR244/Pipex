@@ -1,0 +1,19 @@
+Makefile
+file1
+file2
+main.c
+main.o
+mylib
+pipex
+pipex.h
+b  2 09:35 .
+drwxr-xr-x    5 ksohail-  candidates   170B Feb  2 02:56 ..
+drwxr-xr-x   12 ksohail-  candidates   408B Jan 31 21:16 .git
+-rw-r--r--    1 ksohail-  candidates   624B Feb  2 05:52 Makefile
+-rw-r--r--    1 ksohail-  candidates     0B Feb  1 22:46 file1
+-rw-r--r--    1 ksohail-  candidates   544B Feb  2 09:22 file2
+-rw-r--r--    1 ksohail-  candidates   2.5K Feb  2 09:35 main.c
+-rw-r--r--    1 ksohail-  candidates   3.0K Feb  2 09:35 main.o
+drwxr-xr-x  109 ksohail-  candidates   3.6K Feb  2 08:21 mylib
+-rwxr-xr-x    1 ksohail-  candidates    18K Feb  2 09:35 pipex
+-rw-r--r--    1 ksohail-  candidates   1.1K Feb  2 06:07 pipex.h

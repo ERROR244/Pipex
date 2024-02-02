@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_lstclear_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/31 16:38:08 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/02 06:07:25 by ksohail-         ###   ########.fr       */
+/*   Created: 2023/11/04 19:03:51 by ksohail-          #+#    #+#             */
+/*   Updated: 2024/02/01 21:48:50 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "mylib.h"
 
+void	ft_lstclear(t_list **lst, void (*del)(void*))
+{
+	t_list	*curr1;
+	t_list	*curr2;
 
-
-
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <sys/wait.h>
-# include <time.h>
-# include <unistd.h>
-# include "mylib/mylib.h"
-
-#endif
+	if (lst == NULL || *lst == NULL || del == NULL)
+		return ;
+	curr1 = *lst;
+	while (curr1->next != NULL)
+	{
+		curr2 = curr1->next;
+		ft_lstdelone(curr1, del);
+		curr1 = curr2;
+	}
+	ft_lstdelone(curr1, del);
+	*lst = NULL;
+}

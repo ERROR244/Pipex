@@ -1,27 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_strmapi.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/31 16:38:08 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/02 06:07:25 by ksohail-         ###   ########.fr       */
+/*   Created: 2023/11/03 11:49:51 by ksohail-          #+#    #+#             */
+/*   Updated: 2024/02/01 21:48:50 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "mylib.h"
 
+char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
+{
+	char	*ptr;
+	int		len;
 
-
-
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <sys/wait.h>
-# include <time.h>
-# include <unistd.h>
-# include "mylib/mylib.h"
-
-#endif
+	if (s == NULL || f == NULL)
+		return (NULL);
+	len = ft_strlen(s);
+	if (*s == '\0')
+		return (ft_strdup(""));
+	ptr = (char *)malloc((len + 1) * sizeof(char));
+	if (ptr == NULL)
+		return (NULL);
+	ptr[len] = '\0';
+	len--;
+	while (len >= 0)
+	{
+		ptr[len] = f(len, s[len]);
+		len--;
+	}
+	return (ptr);
+}

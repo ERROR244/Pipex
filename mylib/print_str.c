@@ -1,27 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   print_str.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/31 16:38:08 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/02 06:07:25 by ksohail-         ###   ########.fr       */
+/*   Created: 2023/11/15 11:32:37 by ksohail-          #+#    #+#             */
+/*   Updated: 2024/02/01 21:48:50 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "mylib.h"
 
+int	print_str(char *str)
+{
+	int	i;
+	int	k;
 
-
-
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <sys/wait.h>
-# include <time.h>
-# include <unistd.h>
-# include "mylib/mylib.h"
-
-#endif
+	k = 0;
+	i = 0;
+	if (str == NULL)
+		return (write(1, "(null)", 6));
+	while (*str)
+	{
+		k = print_ch(*str);
+		if (k < 0)
+			return (k);
+		i++;
+		str++;
+	}
+	return (i);
+}

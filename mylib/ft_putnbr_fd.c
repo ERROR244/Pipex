@@ -1,27 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/31 16:38:08 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/02 06:07:25 by ksohail-         ###   ########.fr       */
+/*   Created: 2023/11/04 10:56:29 by ksohail-          #+#    #+#             */
+/*   Updated: 2024/02/01 21:48:50 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "mylib.h"
 
+static void	ft_function(int nb, int fd)
+{
+	long	n;
 
+	n = nb;
+	if (n < 0)
+	{
+		n *= -1;
+		ft_putchar_fd('-', fd);
+	}
+	if (n <= 9)
+	{
+		ft_putchar_fd(n + '0', fd);
+		return ;
+	}
+	if (n != 0)
+	{
+		ft_function(n / 10, fd);
+		ft_putchar_fd((n % 10) + '0', fd);
+	}
+}
 
-
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <sys/wait.h>
-# include <time.h>
-# include <unistd.h>
-# include "mylib/mylib.h"
-
-#endif
+void	ft_putnbr_fd(int n, int fd)
+{
+	if (fd >= 0)
+		ft_function(n, fd);
+}
