@@ -1,6 +1,6 @@
 name = pipex
 
-SRC = main.c mylib/ft_split.c mylib/ft_strjoin.c mylib/ft_strdup.c mylib/ft_strnstr.c mylib/ft_strlen.c mylib/ft_printf.c mylib/print_ch.c mylib/print_i_d.c mylib/print_p.c mylib/print_str.c mylib/print_u.c mylib/print_x.c
+SRC = main.c pipex_utils.c mylib/ft_split.c mylib/ft_strjoin.c mylib/ft_strdup.c mylib/ft_strnstr.c mylib/ft_strlen.c mylib/ft_printf.c mylib/print_ch.c mylib/print_i_d.c mylib/print_p.c mylib/print_str.c mylib/print_u.c mylib/print_x.c
 
 
 OBS = ${SRC:.c=.o}
