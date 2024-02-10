@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 01:59:09 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/03 02:00:23 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/04 16:47:51 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <fcntl.h>
 # include <stdarg.h>
 # include <stdio.h>
+# include <stdint.h>
 # include <stdlib.h>
 # include <unistd.h>
 

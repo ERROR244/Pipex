@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 20:57:54 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/01 21:48:50 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/04 17:33:46 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static void	ft_free(char **ptr, int i)
 	int	j;
 
 	j = 0;
-	while (j < i)
+	while (j <= i)
 		free(ptr[j++]);
 	free(ptr);
 }

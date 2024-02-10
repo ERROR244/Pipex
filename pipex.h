@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:38:08 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/03 01:56:27 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/10 15:55:36 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,23 +23,25 @@
 
 typedef struct s_pipex
 {
-	int		i;
-	int		pid;
 	char	*ptr;
 	char	*str;
+	char	**cmd;
+	char	**paths;
+	char	*path;
+	int		i;
+	int		pid;
 	int		filein;
 	int		fileout;
-	char	**cmd2;
-	char	**cmd1;
-	char	**paths;
-	char	*path1;
-	char	*path2;
 }			t_pipex;
 
-void		error(void);
+void		error(int cmd);
+char		*grep_var(char *line);
+char		*is_it_in(char **env, char *ptr);
+void		free_array(char **str);
 char		*find_path(char **env, char *cmd, t_pipex pipex);
-void		child(char **av, int fd[], t_pipex pipex, char **env);
-void		parent(char **av, int fd[], t_pipex pipex, char **env);
-void		pipex(int fd[], char **av, char **env);
+void		fork_pro(char *av, t_pipex pipex, char **env);
+void		last_cmd(char *av, t_pipex pipex, char **env);
+int			d_is_in(char *str);
+void		put_with_var(char *str, int vars);
 
 #endif
