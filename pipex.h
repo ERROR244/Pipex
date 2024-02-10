@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:38:08 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/10 15:55:36 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/10 18:04:23 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,6 @@ char		*find_path(char **env, char *cmd, t_pipex pipex);
 void		fork_pro(char *av, t_pipex pipex, char **env);
 void		last_cmd(char *av, t_pipex pipex, char **env);
 int			d_is_in(char *str);
-void		put_with_var(char *str, int vars);
+void		put_with_var(char *str, int vars, int fd, char **env);
 
 #endif

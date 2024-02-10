@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:07:05 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/10 15:54:52 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/10 20:50:57 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	last_cmd(char *av, t_pipex pipex, char **env)
 void	here_doc(t_pipex pipex, char *av, int ac, char **env)
 {
 	int	fd[2];
+	char *p = ft_strjoin1(av, "\n");
 	int	k;
 
 	if (ac < 6)
@@ -52,15 +53,15 @@ void	here_doc(t_pipex pipex, char *av, int ac, char **env)
 		pipex.str = get_next_line(0);
 		while (pipex.str)
 		{
-			if (!ft_strncmp(pipex.str, av, ft_strlen(pipex.str)))
+			if (!ft_strncmp(pipex.str, p, ft_strlen(pipex.str)))
 			{
 				free(pipex.str);
 				exit(0);
 			}
 			k = d_is_in(pipex.str);
-			// if (k != 0)
-				put_with_var(pipex.str, k);
-			// else
+			if (k != 0)
+				put_with_var(pipex.str, k, fd[1], env);
+			else
 				ft_putstr_fd(pipex.str, fd[1]);
 			free(pipex.str);
 			pipex.str = get_next_line(0);
@@ -84,7 +85,7 @@ int	main(int ac, char *av[], char **env)
 		if (ft_strncmp(av[1], "here_doc", ft_strlen("here_doc")) == 0)
 		{
 			pipex.i = 3;
-			pipex.fileout = open(av[ac - 1], O_WRONLY | O_CREAT | O_APPEND,
+			pipex.fileout = open(av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC /*O_APPEND*/,
 					0777);
 			here_doc(pipex, av[2], ac, env);
 		}

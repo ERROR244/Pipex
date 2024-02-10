@@ -6,7 +6,7 @@
 #    By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/01 14:29:42 by ksohail-          #+#    #+#              #
-#    Updated: 2024/02/01 21:52:01 by ksohail-         ###   ########.fr        #
+#    Updated: 2024/02/10 19:26:13 by ksohail-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,7 @@ SRC = 	ft_lstadd_back_bonus.c\
 		ft_memmove.c\
 		ft_putstr_fd.c\
 		ft_strjoin.c\
+		ft_strjoin1.c\
 		ft_putchar_fd.c\
 		ft_putendl_fd.c\
 		ft_putnbr_fd.c\

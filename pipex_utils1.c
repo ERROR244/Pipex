@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:41:40 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/10 15:54:41 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/10 21:06:34 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,12 @@ char	*grep_var(char *line)
 	j = 0;
 	k = 0;
 	l = 0;
-    if (!line)
-        return (NULL);
+	if (!line)
+		return (NULL);
 	while (line[i] && line[i - 1] != '$')
 		i++;
 	j = i;
-	while (line[i] && line[i] != ' ')
+	while (line[i] && line[i] != '\n' && line[i] != ' ')
 		i++;
 	k = i - j;
 	str = malloc(sizeof(char) * k);
@@ -55,20 +55,34 @@ int	d_is_in(char *str)
 	return (k);
 }
 
-void	put_with_var(char *str, int vars)
+void	put_with_var(char *str, int vars, int fd, char **env)
 {
-	char **var_tmp;
-	char **var;
-    int i = 0;
-	if (vars == 1)
-        var[0] = grep_var(str);
-    else
-    {
-        var_tmp = ft_split(str, ' ');
-        while (var[i])
-            var[i] = grep_var(var_tmp[i++]);
-    }
-    i = 0;
-    while (var[i])
-        printf("var[%d]->%s-\n", i, var[i++]);
+	int		i;
+	int		k;
+	char	*ptr;
+	char	*ptr1 = NULL;
+
+	i = 0;
+	k = 0;
+	while (str[i])
+	{
+		if (str[i] != '$')
+			write(fd, &str[i], 1);
+		else
+		{
+			ptr = grep_var(str + i);
+			k = ft_strlen(ptr);
+			ptr1 = is_it_in(env, ptr) + k + 1;
+			if (ptr1 == NULL)
+				write(fd ,"$", 1);
+			else if (ptr1 != NULL)
+			{
+				printf("HERE\n");
+				write(fd, ptr1, ft_strlen(ptr1));
+				i += k;
+			}
+			free(ptr);
+		}
+		i++;
+	}
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_utils.c                                      :+:      :+:    :+:   */
+/*   pipex_utils0.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 01:16:23 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/09 19:40:12 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/10 20:56:20 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,10 @@ char	*is_it_in(char **env, char *str)
 	{
 		ptr = ft_strnstr(env[i], str, ft_strlen(str));
 		if (ptr != NULL)
-			break ;
+			return (ptr);
 		i++;
 	}
-	return (ptr);
+	return (NULL);
 }
 
 char	*find_path(char **env, char *cmd, t_pipex pipex)

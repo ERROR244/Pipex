@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_strjoin1.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 12:54:54 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/10 19:23:29 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/10 19:24:03 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mylib.h"
 
-char	*ft_strjoin(char const *s1, char c, char const *s2)
+char	*ft_strjoin1(char const *s1, char const *s2)
 {
 	char	*ptr;
 	int		i;
@@ -24,7 +24,7 @@ char	*ft_strjoin(char const *s1, char c, char const *s2)
 		return (ft_strdup((char *)s1));
 	if (s1 == NULL && s2 == NULL)
 		return (NULL);
-	ptr = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 2) * sizeof(char));
+	ptr = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
 	if (ptr == 0)
 		return (0);
 	i = 0;
@@ -34,7 +34,6 @@ char	*ft_strjoin(char const *s1, char c, char const *s2)
 		ptr[i] = s1[i];
 		i++;
 	}
-	ptr[i++] = c;
 	while (s2[j])
 		ptr[i++] = s2[j++];
 	ptr[i] = '\0';
