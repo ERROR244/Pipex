@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:07:05 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/10 20:50:57 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/11 17:25:18 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int	main(int ac, char *av[], char **env)
 		if (ft_strncmp(av[1], "here_doc", ft_strlen("here_doc")) == 0)
 		{
 			pipex.i = 3;
-			pipex.fileout = open(av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC /*O_APPEND*/,
+			pipex.fileout = open(av[ac - 1], O_WRONLY | O_CREAT | O_APPEND,
 					0777);
 			here_doc(pipex, av[2], ac, env);
 		}

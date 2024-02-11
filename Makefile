@@ -4,7 +4,7 @@ SRC = main.c pipex_utils0.c pipex_utils1.c
 
 OBS = ${SRC:.c=.o}
 
-cc = cc -fsanitize=address -g -O2
+cc = gcc -fsanitize=address -g -O2
 Mylib = ./Mylib/Mylib
 
 all : $(name)

@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 01:16:23 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/10 20:56:20 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/11 17:25:37 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ char	*is_it_in(char **env, char *str)
 
 	i = 0;
 	ptr = NULL;
+	if (str == NULL)
+		return (NULL);
 	while (env[i])
 	{
 		ptr = ft_strnstr(env[i], str, ft_strlen(str));
@@ -93,7 +95,7 @@ void	fork_pro(char *av, t_pipex pipex, char **env)
 	{
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
-		waitpid(0, NULL, 0);
+		waitpid(pipex.pid, NULL, 0);
 	}
 	return ;
 }

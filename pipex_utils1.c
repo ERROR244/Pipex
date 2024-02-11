@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:41:40 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/10 21:06:34 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/11 11:42:38 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,8 @@ void	put_with_var(char *str, int vars, int fd, char **env)
 	int		i;
 	int		k;
 	char	*ptr;
-	char	*ptr1 = NULL;
+	char	*ptr1;
+	char	*ptr2;
 
 	i = 0;
 	k = 0;
@@ -72,15 +73,15 @@ void	put_with_var(char *str, int vars, int fd, char **env)
 		{
 			ptr = grep_var(str + i);
 			k = ft_strlen(ptr);
-			ptr1 = is_it_in(env, ptr) + k + 1;
-			if (ptr1 == NULL)
-				write(fd ,"$", 1);
-			else if (ptr1 != NULL)
+			ptr1 = is_it_in(env, ptr);
+			if (ptr1 != NULL)
 			{
-				printf("HERE\n");
-				write(fd, ptr1, ft_strlen(ptr1));
+				ptr2 = ptr1 + k + 1;
+				write(fd, ptr2, ft_strlen(ptr1) - k - 1);
 				i += k;
 			}
+			else
+				i += k;
 			free(ptr);
 		}
 		i++;
