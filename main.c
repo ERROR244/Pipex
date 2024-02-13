@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:07:05 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/13 10:32:04 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/13 14:56:30 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,25 +23,7 @@ void	error(int cmd)
 	exit(1);
 }
 
-void	last_cmd(char *av, t_pipex pipex, char **env)
-{
-	*pipex.pid = fork();
-	if (*pipex.pid == 0)
-	{
-		dup2(pipex.fileout, STDOUT_FILENO);
-		pipex.cmd = ft_split(av, ' ');
-		pipex.path = find_path(env, pipex.cmd[0], pipex);
-		execve(pipex.path, pipex.cmd, env);
-		if (pipex.path)
-			free(pipex.path);
-		free_array(pipex.cmd);
-		close(pipex.fileout);
-		error(1);
-	}
-	
-}
-
-void	here_doc(t_pipex pipex, char *av, int ac, char **env)
+void	here_doc(t_pipex pipex, char *av, int ac, char **env, int *pid)
 {
 	int	fd[2];
 	char *p = ft_strjoin1(av, "\n");
@@ -51,8 +33,8 @@ void	here_doc(t_pipex pipex, char *av, int ac, char **env)
 		error(0);
 	if (pipe(fd) == -1)
 		error(0);
-	*pipex.pid = fork();
-	if (*pipex.pid == 0)
+	*pid = fork();
+	if (*pid == 0)
 	{
 		close(fd[0]);
 		pipex.str = get_next_line(0);
@@ -76,43 +58,53 @@ void	here_doc(t_pipex pipex, char *av, int ac, char **env)
 	{
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
-		waitpid(*pipex.pid, NULL, 0);
-		pipex.pid++;
+		waitpid(*pid, NULL, 0);
+		pid++;
 	}
 }
 
 int	wait_pid(int *pid, int status, int cmd_num)
 {
-	int i = cmd_num - 1;
+	// int i = cmd_num - 1;
 
+	// status = 0;
+	// printf("//////////////////!!!//////////////////\n");
+	// while (i >= 0)
+	// {
+	// 	waitpid(pid[i], &status, 0);
+	// 	if (WIFEXITED(status))
+	// 	{
+	// 		printf("Child process PID: %d\n", pid[i]);
+	// 		status = WEXITSTATUS(status);
+	// 		break;
+	// 	}
+	// 	i--;
+	// }
+	// while (i >= 0)
+	// 	waitpid(pid[--i], NULL, 0);
+	// free(pid);
+	int i;
+
+	i = 0;
 	status = 0;
-	printf("//////////////////!!!//////////////////\n");
-	while (i >= 0)
+	while (i < cmd_num)
 	{
 		waitpid(pid[i], &status, 0);
 		if (WIFEXITED(status))
 		{
-			printf("Child process PID: %d\n", pid[i]);
 			status = WEXITSTATUS(status);
 			break;
 		}
-		i--;
+		i++;
 	}
-	while (i >= 0)
-		waitpid(pid[--i], 0, 0);
-	free(pid);
-	// int i;
-
-	// i = 0;
-	// status = 0;
-	// while (i < cmd_num)
-	// {
-	// 	waitpid(pid[i], &status, 0);
-	// 	if (WIFEXITED(status))
-	// 		status = WEXITSTATUS(status);
-	// 	i++;
-	// }
-	// printf("%d-\n", i);
+	while (i < cmd_num)
+	{
+		printf("%d\n", pid[i]);
+		waitpid(pid[i], NULL, 0);
+		printf("%d\n", pid[i]);
+		i++;
+	}
+	printf("%d-\n", i);
 	return (status);
 }
 
@@ -121,6 +113,7 @@ int	main(int ac, char *av[], char **env)
 	int		fd[2];
 	int		cmd_num;
 	int		status;
+	int		*pid;
 	t_pipex	pipex;
 
 	if (ac >= 5)
@@ -129,23 +122,28 @@ int	main(int ac, char *av[], char **env)
 		{
 			pipex.i = 3;
 			cmd_num = ac - pipex.i - 1;
-			pipex.pid = malloc(sizeof(int) * (cmd_num));
+			pid = malloc(sizeof(int) * (cmd_num));
 			pipex.fileout = open(av[ac - 1], O_WRONLY | O_CREAT | O_APPEND, 0777);
-			here_doc(pipex, av[2], ac, env);
+			here_doc(pipex, av[2], ac, env, pid);
 		}
 		else
 		{
 			pipex.i = 2;
 			cmd_num = ac - pipex.i - 1;
-			pipex.pid = malloc(sizeof(int) * (cmd_num));
+			pid = malloc(sizeof(int) * (cmd_num));
 			pipex.filein = open(av[1], O_RDONLY, 0777);
 			pipex.fileout = open(av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 			dup2(pipex.filein, STDIN_FILENO);
 		}
 		while (pipex.i < ac - 2)
-			fork_pro(av[pipex.i++], pipex, env);
-		last_cmd(av[ac - 2], pipex, env);
-		status = wait_pid(pipex.pid, status, cmd_num);
+		{
+			fork_pro(av[pipex.i], pipex, env, pid);
+			pipex.i++;
+		}
+		last_cmd(av[ac - 2], pipex, env, pid);
+		for (int k = 0; k < cmd_num; k++)
+			printf("pid[%d]->%d-\n", k, pid[k]);
+		status = wait_pid(pid, status, cmd_num);
 	}
 	else
 		ft_putstr_fd("arg Error💀->Ex: \n-./pipex file1 cmd1 cmd file2\n-./pipex here_doc LIMITER cmd cmd1 file\n", 2);
