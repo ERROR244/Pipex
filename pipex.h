@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:38:08 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/11 17:25:45 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/13 09:38:16 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct s_pipex
 	char	**paths;
 	char	*path;
 	int		i;
-	int		pid;
+	int		*pid;
 	int		filein;
 	int		fileout;
 }			t_pipex;

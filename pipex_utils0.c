@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 01:16:23 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/11 17:25:37 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/13 10:29:44 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,8 @@ void	fork_pro(char *av, t_pipex pipex, char **env)
 
 	if (pipe(fd) == -1)
 		error(0);
-	pipex.pid = fork();
-	if (pipex.pid == 0)
+	*pipex.pid = fork();
+	if (*pipex.pid == 0)
 	{
 		pipex.cmd = ft_split(av, ' ');
 		pipex.path = find_path(env, pipex.cmd[0], pipex);
@@ -95,7 +95,8 @@ void	fork_pro(char *av, t_pipex pipex, char **env)
 	{
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
-		waitpid(pipex.pid, NULL, 0);
+		printf("Child process PID: %d\n", *pipex.pid);
+		pipex.pid++;
 	}
 	return ;
 }
