@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:07:05 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/13 14:56:30 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/15 10:21:30 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,29 +65,13 @@ void	here_doc(t_pipex pipex, char *av, int ac, char **env, int *pid)
 
 int	wait_pid(int *pid, int status, int cmd_num)
 {
-	// int i = cmd_num - 1;
-
-	// status = 0;
-	// printf("//////////////////!!!//////////////////\n");
-	// while (i >= 0)
-	// {
-	// 	waitpid(pid[i], &status, 0);
-	// 	if (WIFEXITED(status))
-	// 	{
-	// 		printf("Child process PID: %d\n", pid[i]);
-	// 		status = WEXITSTATUS(status);
-	// 		break;
-	// 	}
-	// 	i--;
-	// }
-	// while (i >= 0)
-	// 	waitpid(pid[--i], NULL, 0);
-	// free(pid);
-	int i;
-
-	i = 0;
 	status = 0;
-	while (i < cmd_num)
+	int i = cmd_num - 1;
+
+	status = 0;
+	// for (int k = 0; k < cmd_num; k++)
+	// 	printf("pid[%d]->%d-\n", k, pid[k]);
+	while (i >= 0)
 	{
 		waitpid(pid[i], &status, 0);
 		if (WIFEXITED(status))
@@ -95,16 +79,15 @@ int	wait_pid(int *pid, int status, int cmd_num)
 			status = WEXITSTATUS(status);
 			break;
 		}
-		i++;
+		printf("pid[%d]->%d-\n", i, pid[i]);
+		i--;
 	}
-	while (i < cmd_num)
+	while (i >= 0)
 	{
-		printf("%d\n", pid[i]);
-		waitpid(pid[i], NULL, 0);
-		printf("%d\n", pid[i]);
-		i++;
+		printf("pid[%d]->%d-\n", i, pid[i]);
+		waitpid(pid[--i], NULL, 0);
 	}
-	printf("%d-\n", i);
+	free(pid);
 	return (status);
 }
 
@@ -123,7 +106,7 @@ int	main(int ac, char *av[], char **env)
 			pipex.i = 3;
 			cmd_num = ac - pipex.i - 1;
 			pid = malloc(sizeof(int) * (cmd_num));
-			pipex.fileout = open(av[ac - 1], O_WRONLY | O_CREAT | O_APPEND, 0777);
+			pipex.fileout = open(av[ac - 1], O_WRONLY | O_CREAT | O_APPEND, 0666);
 			here_doc(pipex, av[2], ac, env, pid);
 		}
 		else
@@ -131,18 +114,20 @@ int	main(int ac, char *av[], char **env)
 			pipex.i = 2;
 			cmd_num = ac - pipex.i - 1;
 			pid = malloc(sizeof(int) * (cmd_num));
-			pipex.filein = open(av[1], O_RDONLY, 0777);
-			pipex.fileout = open(av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+			pipex.filein = open(av[1], O_RDONLY, 0666);
+			pipex.fileout = open(av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0666);
 			dup2(pipex.filein, STDIN_FILENO);
 		}
 		while (pipex.i < ac - 2)
 		{
 			fork_pro(av[pipex.i], pipex, env, pid);
+			close(pipex.filein);
 			pipex.i++;
 		}
 		last_cmd(av[ac - 2], pipex, env, pid);
-		for (int k = 0; k < cmd_num; k++)
-			printf("pid[%d]->%d-\n", k, pid[k]);
+		printf("done!\n");
+		// for (int k = 0; k < cmd_num; k++)
+		// 	printf("pid[%d]->%d-\n", k, pid[k]);
 		status = wait_pid(pid, status, cmd_num);
 	}
 	else

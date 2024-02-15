@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 01:16:23 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/13 14:43:46 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/15 10:23:28 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,15 +84,17 @@ void	fork_pro(char *av, t_pipex pipex, char **env, int *pid)
 		pipex.path = find_path(env, pipex.cmd[0], pipex);
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
+		// close(pipex.filein);
 		execve(pipex.path, pipex.cmd, env);
 		if (pipex.path)
 			free(pipex.path);
 		free_array(pipex.cmd);
-		close(pipex.filein);
 		error(1);
 	}
 	else
 	{
+		// close(pipex.filein);
+		close(fd[0]);
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
 		printf("Child process PID[%d]: %d\n", pipex.i - 2, pid[pipex.i - 2]);
@@ -104,15 +106,18 @@ void	last_cmd(char *av, t_pipex pipex, char **env, int *pid)
 	pid[pipex.i - 2] = fork();
 	if (pid[pipex.i - 2] == 0)
 	{
+		dup2(pipex.filein, STDOUT_FILENO);
 		dup2(pipex.fileout, STDOUT_FILENO);
 		pipex.cmd = ft_split(av, ' ');
 		pipex.path = find_path(env, pipex.cmd[0], pipex);
+		close(pipex.fileout);
 		execve(pipex.path, pipex.cmd, env);
 		if (pipex.path)
 			free(pipex.path);
 		free_array(pipex.cmd);
-		close(pipex.fileout);
 		error(1);
 	}
+	// close(pipex.filein);
+	// close(pipex.fileout);
 	printf("Child process PID[%d]: %d\n", pipex.i - 2, pid[pipex.i - 2]);
 }
