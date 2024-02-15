@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 01:16:23 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/15 10:23:28 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/15 15:16:52 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,53 +71,52 @@ char	*find_path(char **env, char *cmd, t_pipex pipex)
 	return (NULL);
 }
 
-void	fork_pro(char *av, t_pipex pipex, char **env, int *pid)
+void	fork_pro(char *av, t_pipex pipex, char **env)
 {
 	int	fd[2];
 
 	if (pipe(fd) == -1)
 		error(0);
-	pid[pipex.i - 2] = fork();
-	if (pid[pipex.i - 2] == 0)
+	*pipex.pid = fork();
+	if (*pipex.pid == 0)
 	{
 		pipex.cmd = ft_split(av, ' ');
 		pipex.path = find_path(env, pipex.cmd[0], pipex);
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
-		// close(pipex.filein);
 		execve(pipex.path, pipex.cmd, env);
 		if (pipex.path)
 			free(pipex.path);
 		free_array(pipex.cmd);
+		close(pipex.filein);
 		error(1);
 	}
 	else
 	{
-		// close(pipex.filein);
-		close(fd[0]);
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
-		printf("Child process PID[%d]: %d\n", pipex.i - 2, pid[pipex.i - 2]);
+		printf("Child process PID: %d\n", *pipex.pid);
+		pipex.pid++;
 	}
+	return ;
 }
 
-void	last_cmd(char *av, t_pipex pipex, char **env, int *pid)
+void	last_cmd(char *av, t_pipex pipex, char **env)
 {
-	pid[pipex.i - 2] = fork();
-	if (pid[pipex.i - 2] == 0)
+	*pipex.pid = fork();
+	if (*pipex.pid == 0)
 	{
-		dup2(pipex.filein, STDOUT_FILENO);
 		dup2(pipex.fileout, STDOUT_FILENO);
 		pipex.cmd = ft_split(av, ' ');
 		pipex.path = find_path(env, pipex.cmd[0], pipex);
 		close(pipex.fileout);
+		close(pipex.filein);
 		execve(pipex.path, pipex.cmd, env);
 		if (pipex.path)
 			free(pipex.path);
 		free_array(pipex.cmd);
 		error(1);
 	}
-	// close(pipex.filein);
-	// close(pipex.fileout);
-	printf("Child process PID[%d]: %d\n", pipex.i - 2, pid[pipex.i - 2]);
+	close(pipex.fileout);
+	close(pipex.filein);
 }
