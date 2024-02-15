@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 01:16:23 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/15 15:16:52 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/15 18:49:26 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,46 +76,41 @@ void	fork_pro(char *av, t_pipex pipex, char **env)
 	int	fd[2];
 
 	if (pipe(fd) == -1)
-		error(0);
-	*pipex.pid = fork();
-	if (*pipex.pid == 0)
+		error(0, NULL);
+	pipex.pid[pipex.k] = fork();
+	if (pipex.pid[pipex.k] == 0)
 	{
 		pipex.cmd = ft_split(av, ' ');
 		pipex.path = find_path(env, pipex.cmd[0], pipex);
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
+		close(pipex.filein);
 		execve(pipex.path, pipex.cmd, env);
 		if (pipex.path)
 			free(pipex.path);
 		free_array(pipex.cmd);
-		close(pipex.filein);
-		error(1);
+		error(1, NULL);
 	}
-	else
-	{
-		close(fd[1]);
-		dup2(fd[0], STDIN_FILENO);
-		printf("Child process PID: %d\n", *pipex.pid);
-		pipex.pid++;
-	}
-	return ;
+	dup2(fd[0], STDIN_FILENO);
+	close(fd[1]);
+	close(fd[0]);
 }
 
 void	last_cmd(char *av, t_pipex pipex, char **env)
 {
-	*pipex.pid = fork();
-	if (*pipex.pid == 0)
+	pipex.pid[pipex.k] = fork();
+	if (pipex.pid[pipex.k] == 0)
 	{
-		dup2(pipex.fileout, STDOUT_FILENO);
 		pipex.cmd = ft_split(av, ' ');
 		pipex.path = find_path(env, pipex.cmd[0], pipex);
+		dup2(pipex.fileout, STDOUT_FILENO);
 		close(pipex.fileout);
 		close(pipex.filein);
 		execve(pipex.path, pipex.cmd, env);
 		if (pipex.path)
 			free(pipex.path);
 		free_array(pipex.cmd);
-		error(1);
+		error(1, NULL);
 	}
 	close(pipex.fileout);
 	close(pipex.filein);

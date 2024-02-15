@@ -6,14 +6,19 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:07:05 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/15 15:14:01 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/15 19:00:04 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	error(int cmd)
+void	error(int cmd, char *ptr)
 {
+	if (cmd == 2)
+	{
+		free(ptr);
+		exit(0);
+	}
 	if (cmd == 1)
 	{
 		ft_putstr_fd("Error: cmd is incorrect\n", 2);
@@ -25,48 +30,39 @@ void	error(int cmd)
 
 void	here_doc(t_pipex pipex, char *av, int ac, char **env)
 {
-	int	fd[2];
-	char *p = ft_strjoin1(av, "\n");
-	int	k;
+	int		fd[2];
+	char	*p;
 
-	if (ac < 6)
-		error(0);
-	if (pipe(fd) == -1)
-		error(0);
-	*pipex.pid = fork();
-	if (*pipex.pid == 0)
+	p = ft_strjoin1(av, "\n");
+	if (pipe(fd) == -1 || ac < 6)
+		error(0, NULL);
+	pipex.pid[0] = fork();
+	if (pipex.pid[0] == 0)
 	{
 		close(fd[0]);
 		pipex.str = get_next_line(0);
 		while (pipex.str)
 		{
 			if (!ft_strncmp(pipex.str, p, ft_strlen(pipex.str)))
-			{
-				free(pipex.str);
-				exit(0);
-			}
-			k = d_is_in(pipex.str);
-			if (k != 0)
-				put_with_var(pipex.str, k, fd[1], env);
+				error(2, pipex.str);
+			if (d_is_in(pipex.str) != 0)
+				put_with_var(pipex.str, d_is_in(pipex.str) != 0, fd[1], env);
 			else
 				ft_putstr_fd(pipex.str, fd[1]);
 			free(pipex.str);
 			pipex.str = get_next_line(0);
 		}
 	}
-	else
-	{
-		close(fd[1]);
-		dup2(fd[0], STDIN_FILENO);
-		waitpid(*pipex.pid, NULL, 0);
-		pipex.pid++;
-	}
+	close(fd[1]);
+	dup2(fd[0], STDIN_FILENO);
+	waitpid(pipex.pid[0], NULL, 0);
 }
 
 int	wait_pid(int *pid, int status, int cmd_num)
 {
-	int i = cmd_num - 1;
+	int	i;
 
+	i = cmd_num;
 	status = 0;
 	while (i >= 0)
 	{
@@ -74,48 +70,56 @@ int	wait_pid(int *pid, int status, int cmd_num)
 		if (WIFEXITED(status))
 		{
 			status = WEXITSTATUS(status);
-			break;
+			break ;
 		}
 		i--;
 	}
 	while (i >= 0)
-		waitpid(pid[--i], 0, 0);
+		waitpid(pid[--i], NULL, 0);
 	free(pid);
 	return (status);
+}
+
+int	ft_pipex(t_pipex pipex)
+{
+	if (ft_strncmp(pipex.av[1], "here_doc", ft_strlen("here_doc")) == 0)
+	{
+		pipex.k = 1;
+		pipex.i = 3;
+		pipex.pid = malloc(sizeof(int) * (pipex.ac - pipex.i - 1));
+		pipex.fileout = open(pipex.av[pipex.ac - 1],
+				O_WRONLY | O_CREAT | O_APPEND, 0644);
+		here_doc(pipex, pipex.av[2], pipex.ac, pipex.env);
+	}
+	else
+	{
+		pipex.k = 0;
+		pipex.i = 2;
+		pipex.pid = malloc(sizeof(int) * (pipex.ac - pipex.i - 1));
+		pipex.filein = open(pipex.av[1], O_RDONLY, 0644);
+		pipex.fileout = open(pipex.av[pipex.ac - 1],
+				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		dup2(pipex.filein, STDIN_FILENO);
+	}
+	while (pipex.i < pipex.ac - 2)
+	{
+		fork_pro(pipex.av[pipex.i++], pipex, pipex.env);
+		pipex.k++;
+	}
+	last_cmd(pipex.av[pipex.ac - 2], pipex, pipex.env);
+	return (wait_pid(pipex.pid, 0, pipex.k));
 }
 
 int	main(int ac, char *av[], char **env)
 {
 	int		fd[2];
-	int		cmd_num;
-	int		status;
 	t_pipex	pipex;
 
+	pipex.ac = ac;
+	pipex.av = av;
+	pipex.env = env;
 	if (ac >= 5)
-	{
-		if (ft_strncmp(av[1], "here_doc", ft_strlen("here_doc")) == 0)
-		{
-			pipex.i = 3;
-			cmd_num = ac - pipex.i - 1;
-			pipex.pid = malloc(sizeof(int) * (cmd_num));
-			pipex.fileout = open(av[ac - 1], O_WRONLY | O_CREAT | O_APPEND, 0777);
-			here_doc(pipex, av[2], ac, env);
-		}
-		else
-		{
-			pipex.i = 2;
-			cmd_num = ac - pipex.i - 1;
-			pipex.pid = malloc(sizeof(int) * (cmd_num));
-			pipex.filein = open(av[1], O_RDONLY, 0777);
-			pipex.fileout = open(av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
-			dup2(pipex.filein, STDIN_FILENO);
-		}
-		while (pipex.i < ac - 2)
-			fork_pro(av[pipex.i++], pipex, env);
-		last_cmd(av[ac - 2], pipex, env);
-		status = wait_pid(pipex.pid, status, cmd_num);
-	}
-	else
-		ft_putstr_fd("arg Error💀->Ex: \n-./pipex file1 cmd1 cmd file2\n-./pipex here_doc LIMITER cmd cmd1 file\n", 2);
-	return (status);
+		return (ft_pipex(pipex));
+	ft_putstr_fd("arg Error💀\n", 2);
+	return (1);
 }

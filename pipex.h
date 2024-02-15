@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:38:08 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/13 09:38:16 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/15 17:18:22 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,17 @@ typedef struct s_pipex
 	char	**cmd;
 	char	**paths;
 	char	*path;
+	char	**av;
+	char	**env;
+	int		ac;
 	int		i;
+	int		k;
 	int		*pid;
 	int		filein;
 	int		fileout;
 }			t_pipex;
 
-void		error(int cmd);
+void		error(int cmd, char *ptr);
 char		*grep_var(char *line);
 char		*is_it_in(char **env, char *ptr);
 void		free_array(char **str);
