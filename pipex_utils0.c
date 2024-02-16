@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 01:16:23 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/15 18:49:26 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/16 17:56:23 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,42 +76,46 @@ void	fork_pro(char *av, t_pipex pipex, char **env)
 	int	fd[2];
 
 	if (pipe(fd) == -1)
-		error(0, NULL);
+		error(0, NULL, NULL);
 	pipex.pid[pipex.k] = fork();
 	if (pipex.pid[pipex.k] == 0)
 	{
 		pipex.cmd = ft_split(av, ' ');
 		pipex.path = find_path(env, pipex.cmd[0], pipex);
 		close(fd[0]);
-		dup2(fd[1], STDOUT_FILENO);
-		close(pipex.filein);
+		if (dup2(fd[1], STDOUT_FILENO) == -1)
+			error(0, NULL, NULL);
+		close(fd[1]);
 		execve(pipex.path, pipex.cmd, env);
 		if (pipex.path)
 			free(pipex.path);
 		free_array(pipex.cmd);
-		error(1, NULL);
+		error(1, NULL, NULL);
 	}
-	dup2(fd[0], STDIN_FILENO);
+	if (dup2(fd[0], STDIN_FILENO) == -1)
+		error(0, NULL, NULL);
 	close(fd[1]);
 	close(fd[0]);
+	pipex.k++;
 }
 
-void	last_cmd(char *av, t_pipex pipex, char **env)
+int	last_cmd(char *av, t_pipex pipex, char **env)
 {
 	pipex.pid[pipex.k] = fork();
 	if (pipex.pid[pipex.k] == 0)
 	{
 		pipex.cmd = ft_split(av, ' ');
 		pipex.path = find_path(env, pipex.cmd[0], pipex);
-		dup2(pipex.fileout, STDOUT_FILENO);
+		if (dup2(pipex.fileout, STDOUT_FILENO) == -1)
+			error(0, NULL, NULL);
 		close(pipex.fileout);
-		close(pipex.filein);
+		if (pipex.heredoc == 0)
+			close(pipex.filein);
 		execve(pipex.path, pipex.cmd, env);
 		if (pipex.path)
 			free(pipex.path);
 		free_array(pipex.cmd);
-		error(1, NULL);
+		error(1, NULL, NULL);
 	}
-	close(pipex.fileout);
-	close(pipex.filein);
+	return (wait_pid(pipex.pid, 0, pipex.k));
 }

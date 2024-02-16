@@ -1,0 +1,12 @@
+Makefile
+file1
+file2
+main.c
+main.o
+mylib
+pipex
+pipex.h
+pipex_utils0.c
+pipex_utils0.o
+pipex_utils1.c
+pipex_utils1.o
