@@ -1,9 +1,9 @@
 Makefile
 file1
 file2
+libft
 main.c
 main.o
-mylib
 pipex
 pipex.h
 pipex_utils0.c
