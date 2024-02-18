@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:07:05 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/17 15:41:32 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/18 11:15:06 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,7 @@ int	wait_pid(int *pid, int status, int cmd_num)
 	waitpid(pid[i], &status, 0);
 	if (WIFEXITED(status))
 		status = WEXITSTATUS(status);
-	while (i >= 0)
-		waitpid(pid[--i], 0, 0);
+	wait(NULL);
 	free(pid);
 	return (status);
 }
