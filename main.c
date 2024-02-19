@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:07:05 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/18 11:15:06 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/19 15:08:57 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	error(int cmd, char *ptr, char *p)
 		ft_putstr_fd("Error: cmmd is incorrect\n", 2);
 		exit(127);
 	}
-	ft_putstr_fd("Error:\n", 2);
+	ft_putstr_fd("Error\n", 2);
 	exit(1);
 }
 
@@ -54,7 +54,8 @@ int	wait_pid(int *pid, int status, int cmd_num)
 	waitpid(pid[i], &status, 0);
 	if (WIFEXITED(status))
 		status = WEXITSTATUS(status);
-	wait(NULL);
+	while (i >= 0)
+		waitpid(pid[--i], 0, 0);
 	free(pid);
 	return (status);
 }
@@ -76,14 +77,20 @@ int	ft_pipex(t_pipex p)
 		if (p.filein == -1)
 			error(3, NULL, NULL);
 		p.fileout = open(p.av[p.ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (dup2(p.filein, STDIN_FILENO) == -1)
-			error(0, NULL, NULL);
 	}
 	p.k = p.i - 2;
 	p.heredoc = p.k;
+	int	fd[2];
 	while (p.i < p.ac - 2)
-		fork_pro(p.av[p.i++], p, p.k++);
-	return (last_cmd(p.av[p.ac - 2], p, p.env));
+	{
+		if (pipe(fd) == -1)
+			error(0, NULL, NULL);
+		fork_pro(p.av[p.i++], p, p.k++, fd);
+		printf("%d-\n", fd[0]);
+		p.filein = fd[0];
+		printf("%d-\n", p.filein);
+	}
+	return (last_cmd(p.av[p.ac - 2], p, p.env, fd));
 }
 
 int	main(int ac, char *av[], char **env)

@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 01:16:23 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/17 15:15:07 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/19 15:12:12 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,50 +71,55 @@ char	*find_path(char **env, char *cmd, t_pipex pipex)
 	return (NULL);
 }
 
-void	fork_pro(char *av, t_pipex pipex, int k)
+void	fork_pro(char *av, t_pipex pipex, int k, int fd[2])
 {
-	int	fd[2];
-
-	if (pipe(fd) == -1)
-		error(0, NULL, NULL);
 	pipex.pid[k] = fork();
 	if (pipex.pid[k] == 0)
 	{
 		pipex.cmd = ft_split(av, ' ');
 		pipex.path = find_path(pipex.env, pipex.cmd[0], pipex);
-		close(fd[0]);
+		if (dup2(pipex.filein, STDIN_FILENO) == -1)
+			error(0, NULL, NULL);
 		if (dup2(fd[1], STDOUT_FILENO) == -1)
 			error(0, NULL, NULL);
+		close(fd[0]);
 		close(fd[1]);
+		if (pipex.heredoc == 0)
+			close(pipex.filein);
+		close(pipex.fileout);
 		execve(pipex.path, pipex.cmd, pipex.env);
 		if (pipex.path)
 			free(pipex.path);
 		free_array(pipex.cmd);
 		error(1, NULL, NULL);
 	}
-	if (dup2(fd[0], STDIN_FILENO) == -1)
-		error(0, NULL, NULL);
 	close(fd[1]);
-	close(fd[0]);
+	close(pipex.filein);
 }
 
-int	last_cmd(char *av, t_pipex pipex, char **env)
+int	last_cmd(char *av, t_pipex pipex, char **env, int fd[2])
 {
 	pipex.pid[pipex.k] = fork();
 	if (pipex.pid[pipex.k] == 0)
 	{
 		pipex.cmd = ft_split(av, ' ');
 		pipex.path = find_path(env, pipex.cmd[0], pipex);
+		if (dup2(pipex.filein, STDIN_FILENO) == -1)
+			error(0, NULL, NULL);
 		if (dup2(pipex.fileout, STDOUT_FILENO) == -1)
 			error(0, NULL, NULL);
 		close(pipex.fileout);
 		if (pipex.heredoc == 0)
 			close(pipex.filein);
+		close(fd[1]);
+		close(fd[0]);
 		execve(pipex.path, pipex.cmd, env);
 		if (pipex.path)
 			free(pipex.path);
 		free_array(pipex.cmd);
 		error(1, NULL, NULL);
 	}
+	close(fd[1]);
+	close(fd[0]);
 	return (wait_pid(pipex.pid, 0, pipex.k));
 }
