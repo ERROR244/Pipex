@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:38:08 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/19 15:01:54 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/22 17:46:09 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ typedef struct s_pipex
 	char	**env;
 	int		ac;
 	int		i;
-	int		heredoc;
 	int		k;
 	int		*pid;
 	int		filein;
@@ -59,7 +58,7 @@ void		fork_pro(char *av, t_pipex pipex, int k, int fd[2]);
 int			wait_pid(int *pid, int status, int cmd_num);
 int			last_cmd(char *av, t_pipex pipex, char **env, int fd[2]);
 int			d_is_in(char *str);
-void		put_with_var(char *str, int vars, int fd, char **env);
-void		heredoc(t_pipex pipex, char *p, int fd[], char **env);
+void		put_with_var(char *str, int fd, char **env);
+void		heredoc(t_pipex pipex, char *p, char **env);
 
 #endif

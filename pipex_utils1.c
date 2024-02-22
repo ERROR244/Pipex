@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:41:40 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/22 09:00:03 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/22 18:37:06 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,10 @@ int	d_is_in(char *str)
 			k++;
 		i++;
 	}
-	return (k);
+	return (1);
 }
 
-void	put_with_var(char *str, int vars, int fd, char **env)
+void	put_with_var(char *str, int filein, char **env)
 {
 	t_struct	var;
 
@@ -89,7 +89,7 @@ void	put_with_var(char *str, int vars, int fd, char **env)
 	while (str[var.i])
 	{
 		if (str[var.i] != '$')
-			write(fd, &str[var.i], 1);
+			write(filein, &str[var.i], 1);
 		else
 		{
 			var.ptr = grep_var(str + var.i);
@@ -98,7 +98,7 @@ void	put_with_var(char *str, int vars, int fd, char **env)
 			if (var.ptr1 != NULL)
 			{
 				var.ptr2 = var.ptr1 + var.k + 1;
-				write(fd, var.ptr2, ft_strlen(var.ptr1) - var.k - 1);
+				write(filein, var.ptr2, ft_strlen(var.ptr1) - var.k - 1);
 			}
 			var.i += var.k;
 			free(var.ptr);
@@ -109,28 +109,23 @@ void	put_with_var(char *str, int vars, int fd, char **env)
 
 void	here_doc(t_pipex pipex, char *av, int ac, char **env)
 {
-	int		fd[2];
 	char	*p;
 
-	if (pipe(fd) == -1 || ac < 6)
+	if (ac < 6)
 		exit(errno);
 	pipex.pid[0] = fork();
 	if (pipex.pid[0] == 0)
 	{
 		p = ft_strjoin1(av, "\n");
-		close(fd[0]);
 		ft_putstr_fd("pipe heredoc> ", 1);
 		pipex.str = get_next_line(0);
 		while (pipex.str)
 		{
-			heredoc(pipex, p, fd, env);
+			heredoc(pipex, p, env);
 			free(pipex.str);
 			pipex.str = get_next_line(0);
 		}
 	}
-	close(fd[1]);
-	if (dup2(fd[0], STDIN_FILENO) == -1)
-		exit(errno);
-	close(fd[0]);
+	close(pipex.filein);
 	waitpid(pipex.pid[0], NULL, 0);
 }

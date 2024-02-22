@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:07:05 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/22 16:02:29 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/22 17:59:56 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,15 @@ void	error(int cmd, char *ptr, char *p)
 	}
 }
 
-void	heredoc(t_pipex pipex, char *p, int fd[], char **env)
+void	heredoc(t_pipex pipex, char *p, char **env)
 {
 	if (!ft_strncmp(pipex.str, p, ft_strlen(pipex.str)))
 		error(2, pipex.str, p);
 	ft_putstr_fd("pipe heredoc> ", 1);
 	if (d_is_in(pipex.str) != 0)
-		put_with_var(pipex.str, d_is_in(pipex.str) != 0, fd[1], env);
+		put_with_var(pipex.str, pipex.filein, env);
 	else
-		ft_putstr_fd(pipex.str, fd[1]);
+		ft_putstr_fd(pipex.str, pipex.filein);
 }
 
 int	wait_pid(int *pid, int status, int cmd_num)
@@ -68,19 +68,19 @@ int	ft_pipex(t_pipex p, int fd[2])
 	{
 		p.i++;
 		p.pid = malloc(sizeof(int) * (p.ac - p.i - 1));
-		here_doc(p, p.av[2], p.ac, p.env);
+		p.filein = open("here_doc", O_RDWR | O_CREAT | O_TRUNC, 0644);
 		p.fileout = open(p.av[p.ac - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
+		here_doc(p, p.av[2], p.ac, p.env);
 	}
 	else
 	{
 		p.pid = malloc(sizeof(int) * (p.ac - p.i - 1));
 		p.fileout = open(p.av[p.ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		p.filein = open(p.av[1], O_RDONLY, 0644);
 		if (p.filein == -1)
 			error(3, p.av[1], NULL);
 	}
+	p.filein = open(p.av[1], O_RDONLY, 0644);
 	p.k = p.i - 2;
-	p.heredoc = p.k;
 	while (p.i < p.ac - 2)
 	{
 		if (pipe(fd) == -1)
@@ -102,18 +102,12 @@ int	main(int ac, char *av[], char **env)
 	pipex.av = av;
 	pipex.env = env;
 	pipex.i = 2;
-	pipex.heredoc = -1;
 	if (ac >= 5)
 		status = ft_pipex(pipex, fd);
 	else
 		ft_putstr_fd("arg Error💀\n", 2);
-	if (pipex.heredoc == 1)
-		close(pipex.fileout);
-	else if (pipex.heredoc == 0)
-	{
-		close(pipex.filein);
-		close(pipex.fileout);
-	}
-	while (1);
+	close(pipex.filein);
+	close(pipex.fileout);
+	unlink("here_doc");
 	return (status);
 }

@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 01:16:23 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/22 09:05:44 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/22 17:30:52 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,7 @@ void	fork_pro(char *av, t_pipex pipex, int k, int fd[2])
 			exit(errno);
 		close(fd[0]);
 		close(fd[1]);
-		if (pipex.heredoc == 0)
-			close(pipex.filein);
+		close(pipex.filein);
 		close(pipex.fileout);
 		execve(pipex.path, pipex.cmd, pipex.env);
 		if (pipex.path)
@@ -109,8 +108,7 @@ int	last_cmd(char *av, t_pipex pipex, char **env, int fd[2])
 		if (dup2(pipex.fileout, STDOUT_FILENO) == -1)
 			exit(errno);
 		close(pipex.fileout);
-		if (pipex.heredoc == 0)
-			close(pipex.filein);
+		close(pipex.filein);
 		close(fd[1]);
 		close(fd[0]);
 		execve(pipex.path, pipex.cmd, env);

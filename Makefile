@@ -7,13 +7,13 @@ SRC = 	main.c pipex_utils0.c pipex_utils1.c libft/ft_isalpha.c libft/ft_split.c 
 
 OBS = ${SRC:.c=.o}
 
-cc = gcc #-fsanitize=address -g -O2
-libft = ./libft/libft
+cc = cc
+CFLAGS = -Wall -Wextra -Werror
 
 all : $(name)
 
 $(name) : $(OBS)
-	${cc} ${OBS} -o ${name}
+	${cc} $(CFLAGS) ${OBS} -o ${name}
 
 %.o:	%.c
 	$(CC) $(CFLAGS) -c $^ -o $@
