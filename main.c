@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:07:05 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/19 15:08:57 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/22 09:12:32 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,24 @@ void	error(int cmd, char *ptr, char *p)
 {
 	if (cmd == 3)
 	{
-		ft_putstr_fd("Error: can't find file1\n", 2);
-		exit(1);
+		ft_putstr_fd("zsh: no such file or directory: ", 2);
+		ft_putstr_fd(ptr, 2);
+		ft_putstr_fd("\n", 2);
+		return ;
 	}
-	if (cmd == 2)
+	else if (cmd == 2)
 	{
 		free(ptr);
 		free(p);
 		exit(0);
 	}
-	if (cmd == 1)
+	else if (cmd == 1)
 	{
-		ft_putstr_fd("Error: cmmd is incorrect\n", 2);
+		ft_putstr_fd("zsh: command not found: ", 2);
+		ft_putstr_fd(ptr, 2);
+		ft_putstr_fd("\n", 2);
 		exit(127);
 	}
-	ft_putstr_fd("Error\n", 2);
-	exit(1);
 }
 
 void	heredoc(t_pipex pipex, char *p, int fd[], char **env)
@@ -60,50 +62,48 @@ int	wait_pid(int *pid, int status, int cmd_num)
 	return (status);
 }
 
-int	ft_pipex(t_pipex p)
+int	ft_pipex(t_pipex p, int fd[2])
 {
 	if (ft_strncmp(p.av[1], "here_doc", ft_strlen("here_doc")) == 0)
 	{
-		p.i = 3;
+		p.i++;
 		p.pid = malloc(sizeof(int) * (p.ac - p.i - 1));
 		here_doc(p, p.av[2], p.ac, p.env);
 		p.fileout = open(p.av[p.ac - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
 	}
 	else
 	{
-		p.i = 2;
 		p.pid = malloc(sizeof(int) * (p.ac - p.i - 1));
+		p.fileout = open(p.av[p.ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		p.filein = open(p.av[1], O_RDONLY, 0644);
 		if (p.filein == -1)
-			error(3, NULL, NULL);
-		p.fileout = open(p.av[p.ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			error(3, p.av[1], NULL);
 	}
 	p.k = p.i - 2;
 	p.heredoc = p.k;
-	int	fd[2];
 	while (p.i < p.ac - 2)
 	{
 		if (pipe(fd) == -1)
-			error(0, NULL, NULL);
+			exit(errno);
 		fork_pro(p.av[p.i++], p, p.k++, fd);
-		printf("%d-\n", fd[0]);
 		p.filein = fd[0];
-		printf("%d-\n", p.filein);
 	}
 	return (last_cmd(p.av[p.ac - 2], p, p.env, fd));
 }
 
 int	main(int ac, char *av[], char **env)
 {
-	int		status;
 	t_pipex	pipex;
+	int		status;
+	int		fd[2];
 
 	status = 1;
 	pipex.ac = ac;
 	pipex.av = av;
 	pipex.env = env;
+	pipex.i = 2;
 	if (ac >= 5)
-		status = ft_pipex(pipex);
+		status = ft_pipex(pipex, fd);
 	else
 		ft_putstr_fd("arg Error💀\n", 2);
 	if (pipex.heredoc == 1)

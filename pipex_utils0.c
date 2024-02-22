@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 01:16:23 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/19 15:12:12 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/22 09:05:44 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,9 +79,9 @@ void	fork_pro(char *av, t_pipex pipex, int k, int fd[2])
 		pipex.cmd = ft_split(av, ' ');
 		pipex.path = find_path(pipex.env, pipex.cmd[0], pipex);
 		if (dup2(pipex.filein, STDIN_FILENO) == -1)
-			error(0, NULL, NULL);
+			exit(errno);
 		if (dup2(fd[1], STDOUT_FILENO) == -1)
-			error(0, NULL, NULL);
+			exit(errno);
 		close(fd[0]);
 		close(fd[1]);
 		if (pipex.heredoc == 0)
@@ -91,7 +91,7 @@ void	fork_pro(char *av, t_pipex pipex, int k, int fd[2])
 		if (pipex.path)
 			free(pipex.path);
 		free_array(pipex.cmd);
-		error(1, NULL, NULL);
+		error(1, av, NULL);
 	}
 	close(fd[1]);
 	close(pipex.filein);
@@ -105,9 +105,9 @@ int	last_cmd(char *av, t_pipex pipex, char **env, int fd[2])
 		pipex.cmd = ft_split(av, ' ');
 		pipex.path = find_path(env, pipex.cmd[0], pipex);
 		if (dup2(pipex.filein, STDIN_FILENO) == -1)
-			error(0, NULL, NULL);
+			exit(errno);
 		if (dup2(pipex.fileout, STDOUT_FILENO) == -1)
-			error(0, NULL, NULL);
+			exit(errno);
 		close(pipex.fileout);
 		if (pipex.heredoc == 0)
 			close(pipex.filein);
@@ -117,7 +117,7 @@ int	last_cmd(char *av, t_pipex pipex, char **env, int fd[2])
 		if (pipex.path)
 			free(pipex.path);
 		free_array(pipex.cmd);
-		error(1, NULL, NULL);
+		error(1, av, NULL);
 	}
 	close(fd[1]);
 	close(fd[0]);
