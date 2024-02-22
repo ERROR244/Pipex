@@ -13,16 +13,16 @@ libft = ./libft/libft
 all : $(name)
 
 $(name) : $(OBS)
-	@${cc} ${OBS} -o ${name}
+	${cc} ${OBS} -o ${name}
 
 %.o:	%.c
-	@$(CC) $(CFLAGS) -c $^ -o $@
+	$(CC) $(CFLAGS) -c $^ -o $@
 
 clean :
-	@rm -f $(OBS)
+	rm -f $(OBS)
 
 fclean: clean
-	@rm -f $(name)
+	rm -f $(name)
 
 re : fclean all
 

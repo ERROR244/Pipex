@@ -1,8 +1,0 @@
-total 41
-dr-xr-xr-x   1 root      wheel              0 Feb 22 08:36 .
-dr-xr-xr-x   3 root      wheel           4435 Feb 22 08:36 ..
-prw-rw----   0 ksohail-  candidates      1105 Feb 22 09:13 0
--rw-r--r--   1 ksohail-  candidates         0 Feb 22 09:13 1
-crw--w----   1 ksohail-  tty          16,   1 Feb 22 09:13 2
-drw-r--r--  17 ksohail-  candidates       578 Feb 22 09:12 3
-dr--r--r--   1 root      wheel              0 Feb 22 08:36 4

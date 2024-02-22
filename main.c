@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:07:05 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/22 09:12:32 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/22 16:02:29 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,16 +102,18 @@ int	main(int ac, char *av[], char **env)
 	pipex.av = av;
 	pipex.env = env;
 	pipex.i = 2;
+	pipex.heredoc = -1;
 	if (ac >= 5)
 		status = ft_pipex(pipex, fd);
 	else
 		ft_putstr_fd("arg Error💀\n", 2);
 	if (pipex.heredoc == 1)
 		close(pipex.fileout);
-	else
+	else if (pipex.heredoc == 0)
 	{
 		close(pipex.filein);
 		close(pipex.fileout);
 	}
+	while (1);
 	return (status);
 }
