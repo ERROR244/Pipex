@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:41:40 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/24 17:31:49 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/24 21:58:34 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ char	*touppercase(char *str)
 	int		i;
 	int		k;
 
+	if (ft_strlen(str) == 0)
+		return (str);
 	ptr = str;
 	i = ft_isalpha(*ptr);
 	ptr++;
@@ -51,14 +53,16 @@ char	*grep_var(char *line)
 	l = 0;
 	if (!line)
 		return (NULL);
-	while (line[i] && line[i - 1] != '$')
+	while (line[i] && line[i] != '$')
 		i++;
-	j = i;
+	j = ++i;
 	while (line[i] && line[i] != '\n' && line[i] != ' ')
 		i++;
 	k = i - j;
-	str = malloc(sizeof(char) * (k));
-	while (l < (k))
+	str = malloc(sizeof(char) * (k + 1));
+	if (!str)
+		return (NULL);
+	while (l < k)
 		str[l++] = line[j++];
 	str[l] = '\0';
 	return (touppercase(str));
@@ -88,7 +92,9 @@ void	put_with_var(char *str, int filein, char **env)
 	var.k = 0;
 	while (str[var.i])
 	{
-		if (str[var.i] != '$')
+		if ((str[var.i] != '$') || (str[var.i + 1] == '\0' || str[var.i
+				+ 1] == ' ' || str[var.i + 1] == '\n') || (str[var.i + 1] != '$'
+				&& ft_isalpha(str[var.i + 1]) == 0))
 			write(filein, &str[var.i], 1);
 		else
 		{
