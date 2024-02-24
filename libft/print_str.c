@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 11:32:37 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/22 09:14:48 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/24 16:43:43 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	print_str(char *str)
 	k = 0;
 	i = 0;
 	if (str == NULL)
-		return (write(1, "(null)", 6));
+		return (write(2, "(null)", 6));
 	while (*str)
 	{
 		k = print_ch(*str);

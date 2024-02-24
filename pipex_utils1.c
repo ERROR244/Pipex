@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:41:40 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/22 18:37:06 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/24 17:31:49 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int	d_is_in(char *str)
 			k++;
 		i++;
 	}
-	return (1);
+	return (k);
 }
 
 void	put_with_var(char *str, int filein, char **env)
@@ -111,6 +111,7 @@ void	here_doc(t_pipex pipex, char *av, int ac, char **env)
 {
 	char	*p;
 
+	pipex.k++;
 	if (ac < 6)
 		exit(errno);
 	pipex.pid[0] = fork();
@@ -125,6 +126,8 @@ void	here_doc(t_pipex pipex, char *av, int ac, char **env)
 			free(pipex.str);
 			pipex.str = get_next_line(0);
 		}
+		free(p);
+		exit(0);
 	}
 	close(pipex.filein);
 	waitpid(pipex.pid[0], NULL, 0);

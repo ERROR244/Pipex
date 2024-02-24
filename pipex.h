@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:38:08 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/22 17:46:09 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/24 17:23:41 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ typedef struct s_struct
 	char	*ptr2;
 }			t_struct;
 
+t_pipex		fop(int flag, t_pipex p);
 void		error(int cmd, char *ptr, char *p);
 void		here_doc(t_pipex pipex, char *av, int ac, char **env);
 char		*grep_var(char *line);
