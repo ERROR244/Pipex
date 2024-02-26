@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 17:22:26 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/26 14:09:20 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/26 15:47:03 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	heredoc(t_pipex pipex, char *p, char **env)
 {
 	if (!ft_strncmp(pipex.str, p, ft_strlen(pipex.str)))
 		error(2, pipex.str, p);
-	ft_putstr_fd("pipe heredoc> ", 1);
+	// ft_putstr_fd("pipe heredoc> ", 1);
 	if (d_is_in(pipex.str) != 0)
 		put_with_var(pipex.str, pipex.filein, env);
 	else
@@ -38,7 +38,7 @@ int	wait_pid(int *pid, int status, int cmd_num)
 	return (status);
 }
 
-t_pipex	fop(int flag, t_pipex p)
+t_pipex	fop(int flag, t_pipex p, int fd[2])
 {
 	if (flag == 1)
 	{
@@ -52,13 +52,13 @@ t_pipex	fop(int flag, t_pipex p)
 	}
 	else if (flag == 2)
 	{
+		if (pipe(fd) == -1)
+			exit(errno);
 		p.i++;
 		p.pid = malloc(sizeof(int) * (p.ac - p.i - 1));
-		p.filein = open(".here_doc", O_RDWR | O_CREAT | O_TRUNC, 0644);
-		here_doc(p, p.av[2], p.ac, p.env);
-		p.filein = open(".here_doc", O_RDONLY, 0644);
-		if (p.filein == -1)
-			error(4, p.av[1], p.av[p.ac - 1]);
+		p.filein = fd[1];
+		here_doc(p);
+		p.filein = fd[0];
 		p.fileout = open(p.av[p.ac - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (p.fileout == -1)
 			error(3, p.av[1], p.av[p.ac - 1]);
@@ -84,7 +84,7 @@ void	put_with_var(char *str, int filein, char **env)
 			var.ptr = grep_var(str + var.i);
 			var.k = ft_strlen(var.ptr);
 			var.ptr1 = is_it_in(env, var.ptr);
-			if (var.ptr1 != NULL)
+			if (var.ptr1 != NULL && (var.i == 0 || str[var.i - 1] == ' '))
 			{
 				var.ptr2 = var.ptr1 + var.k + 1;
 				write(filein, var.ptr2, ft_strlen(var.ptr1) - var.k - 1);

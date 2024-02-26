@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:41:40 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/25 18:53:09 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/26 15:49:44 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,6 @@ char	*grep_var(char *line)
 	l = 0;
 	if (!line)
 		return (NULL);
-	while (line[i] && line[i] != '$')
-		i++;
 	j = ++i;
 	while (line[i] && line[i] != '\n' && line[i] != ' ')
 		i++;
@@ -84,22 +82,22 @@ int	d_is_in(char *str)
 	return (k);
 }
 
-void	here_doc(t_pipex pipex, char *av, int ac, char **env)
+void	here_doc(t_pipex pipex)
 {
 	char	*p;
 
 	pipex.k++;
-	if (ac < 6)
+	if (pipex.ac < 6)
 		exit(errno);
 	pipex.pid[0] = fork();
 	if (pipex.pid[0] == 0)
 	{
-		p = ft_strjoin1(av, "\n");
-		ft_putstr_fd("pipe heredoc> ", 1);
+		p = ft_strjoin1(pipex.av[2], "\n");
+		// ft_putstr_fd("pipe heredoc> ", 1);
 		pipex.str = get_next_line(0);
 		while (pipex.str)
 		{
-			heredoc(pipex, p, env);
+			heredoc(pipex, p, pipex.env);
 			free(pipex.str);
 			pipex.str = get_next_line(0);
 		}

@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:07:05 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/26 14:23:08 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/26 14:31:50 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 int	ft_pipex_bonus(t_pipex pipex, int fd[2])
 {
 	if (ft_strcmp(pipex.av[1], "here_doc") == 0)
-		pipex = fop(2, pipex);
+		pipex = fop(2, pipex, fd);
 	else
-		pipex = fop(1, pipex);
+		pipex = fop(1, pipex, fd);
 	while (pipex.i < pipex.ac - 2)
 	{
 		if (pipe(fd) == -1)
@@ -48,6 +48,5 @@ int	main(int ac, char *av[], char **env)
 		exit(1);
 	}
 	ft_close(pipex.filein);
-	unlink(".here_doc");
 	return (status);
 }

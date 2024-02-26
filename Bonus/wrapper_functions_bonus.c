@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 20:19:57 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/26 14:15:37 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/26 16:13:04 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,8 @@ void	ft_close(int fd)
 	int	n;
 
 	n = close(fd);
-	ft_printf("%d \n", n);
 	if (n == -1)
-	{
-		perror("ERROR");
-		exit(1);
-	}
+		exit();
 }
 
 int	ft_fork(void)

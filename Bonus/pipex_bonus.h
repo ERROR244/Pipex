@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/26 14:04:19 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/26 14:23:21 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/26 14:39:35 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,9 @@ typedef struct s_struct
 void		ft_dup2(int fd, int std);
 int			ft_fork(void);
 void		ft_close(int fd);
-t_pipex		fop(int flag, t_pipex p);
+t_pipex		fop(int flag, t_pipex p, int fd[2]);
 void		error(int cmd, char *ptr, char *p);
-void		here_doc(t_pipex pipex, char *av, int ac, char **env);
+void		here_doc(t_pipex pipex);
 char		*grep_var(char *line);
 char		*is_it_in(char **env, char *ptr);
 void		free_array(char **str);

@@ -39,11 +39,15 @@ CFLAGS = -Wall -Wextra -Werror
 all : $(name)
 
 $(name) : $(OBS)
+	touch in
+	touch out
 	${CC} $(CFLAGS) ${OBS} -o ${name}
 
 bonus	:	$(bonus)
 
 $(bonus)	:	$(OBSB)
+	touch in
+	touch out
 	${CC} $(CFLAGS) ${OBSB} -o ${bonus}
 
 %.o:	%.c
