@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_utils1.c                                     :+:      :+:    :+:   */
+/*   pipex_utils1_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:41:40 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/24 21:58:34 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/25 18:53:09 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
 char	*touppercase(char *str)
 {
@@ -84,35 +84,6 @@ int	d_is_in(char *str)
 	return (k);
 }
 
-void	put_with_var(char *str, int filein, char **env)
-{
-	t_struct	var;
-
-	var.i = 0;
-	var.k = 0;
-	while (str[var.i])
-	{
-		if ((str[var.i] != '$') || (str[var.i + 1] == '\0' || str[var.i
-				+ 1] == ' ' || str[var.i + 1] == '\n') || (str[var.i + 1] != '$'
-				&& ft_isalpha(str[var.i + 1]) == 0))
-			write(filein, &str[var.i], 1);
-		else
-		{
-			var.ptr = grep_var(str + var.i);
-			var.k = ft_strlen(var.ptr);
-			var.ptr1 = is_it_in(env, var.ptr);
-			if (var.ptr1 != NULL)
-			{
-				var.ptr2 = var.ptr1 + var.k + 1;
-				write(filein, var.ptr2, ft_strlen(var.ptr1) - var.k - 1);
-			}
-			var.i += var.k;
-			free(var.ptr);
-		}
-		var.i++;
-	}
-}
-
 void	here_doc(t_pipex pipex, char *av, int ac, char **env)
 {
 	char	*p;
@@ -135,6 +106,6 @@ void	here_doc(t_pipex pipex, char *av, int ac, char **env)
 		free(p);
 		exit(0);
 	}
-	close(pipex.filein);
+	ft_close(pipex.filein);
 	waitpid(pipex.pid[0], NULL, 0);
 }

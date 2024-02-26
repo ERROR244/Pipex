@@ -1,38 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_utils2.c                                     :+:      :+:    :+:   */
+/*   pipex_utils2_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 17:22:26 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/24 21:54:14 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/26 14:09:20 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
-
-void	error(int cmd, char *ptr, char *p)
-{
-	if (cmd == 4)
-		ft_printf("zsh: %s: %s\n", strerror(errno), ptr);
-	else if (cmd == 3)
-	{
-		ft_printf("zsh: %s: %s\n", strerror(errno), p);
-		exit(1);
-	}
-	else if (cmd == 2)
-	{
-		free(ptr);
-		free(p);
-		exit(0);
-	}
-	else if (cmd == 1)
-	{
-		ft_printf("zsh: command not found: %s\n", ptr);
-		exit(127);
-	}
-}
+#include "pipex_bonus.h"
 
 void	heredoc(t_pipex pipex, char *p, char **env)
 {
@@ -86,4 +64,33 @@ t_pipex	fop(int flag, t_pipex p)
 			error(3, p.av[1], p.av[p.ac - 1]);
 	}
 	return (p);
+}
+
+void	put_with_var(char *str, int filein, char **env)
+{
+	t_struct	var;
+
+	var.i = 0;
+	var.k = 0;
+	while (str[var.i])
+	{
+		if ((str[var.i] != '$') || (str[var.i + 1] == '\0' || str[var.i
+					+ 1] == ' ' || str[var.i + 1] == '\n') || (str[var.i
+					+ 1] != '$'
+				&& ft_isalpha(str[var.i + 1]) == 0))
+			write(filein, &str[var.i++], 1);
+		else
+		{
+			var.ptr = grep_var(str + var.i);
+			var.k = ft_strlen(var.ptr);
+			var.ptr1 = is_it_in(env, var.ptr);
+			if (var.ptr1 != NULL)
+			{
+				var.ptr2 = var.ptr1 + var.k + 1;
+				write(filein, var.ptr2, ft_strlen(var.ptr1) - var.k - 1);
+			}
+			var.i += var.k + 1;
+			free(var.ptr);
+		}
+	}
 }

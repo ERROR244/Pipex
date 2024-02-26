@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_utils0.c                                     :+:      :+:    :+:   */
+/*   pipex_utils0_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 01:16:23 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/25 20:03:34 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/26 14:23:14 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
 void	free_array(char **str)
 {
@@ -90,11 +90,11 @@ void	fork_pro(char *av, t_pipex pipex, int k, int fd[2])
 		free_array(pipex.cmd);
 		error(1, av, NULL);
 	}
-	close(fd[1]);
-	close(pipex.filein);
+	ft_close(fd[1]);
+	ft_close(pipex.filein);
 }
 
-int	last_cmd(char *av, t_pipex pipex, char **env, int fd[2])
+int	last_cmd(char *av, t_pipex pipex, char **env)
 {
 	pipex.pid[pipex.k] = ft_fork();
 	if (pipex.pid[pipex.k] == 0)
@@ -111,7 +111,6 @@ int	last_cmd(char *av, t_pipex pipex, char **env, int fd[2])
 		free_array(pipex.cmd);
 		error(1, av, NULL);
 	}
-	ft_close(fd[0]);
 	ft_close(pipex.fileout);
 	return (wait_pid(pipex.pid, 0, pipex.k));
 }

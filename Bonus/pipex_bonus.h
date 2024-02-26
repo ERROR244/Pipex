@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   pipex_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/31 16:38:08 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/25 20:04:01 by ksohail-         ###   ########.fr       */
+/*   Created: 2024/02/26 14:04:19 by ksohail-          #+#    #+#             */
+/*   Updated: 2024/02/26 14:23:21 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#ifndef PIPEX_BONUS_H
+# define PIPEX_BONUS_H
 
-# include "libft/libft.h"
+# include "../libft/libft.h"
 # include <errno.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -51,12 +51,18 @@ typedef struct s_struct
 void		ft_dup2(int fd, int std);
 int			ft_fork(void);
 void		ft_close(int fd);
+t_pipex		fop(int flag, t_pipex p);
 void		error(int cmd, char *ptr, char *p);
+void		here_doc(t_pipex pipex, char *av, int ac, char **env);
+char		*grep_var(char *line);
 char		*is_it_in(char **env, char *ptr);
 void		free_array(char **str);
 char		*find_path(char **env, char *cmd, t_pipex pipex);
 void		fork_pro(char *av, t_pipex pipex, int k, int fd[2]);
 int			wait_pid(int *pid, int status, int cmd_num);
-int			last_cmd(char *av, t_pipex pipex, char **env, int fd[2]);
+int			last_cmd(char *av, t_pipex pipex, char **env);
+int			d_is_in(char *str);
+void		put_with_var(char *str, int fd, char **env);
+void		heredoc(t_pipex pipex, char *p, char **env);
 
 #endif

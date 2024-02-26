@@ -1,46 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:07:05 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/25 20:08:33 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/26 14:23:08 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
-int	wait_pid(int *pid, int status, int cmd_num)
+int	ft_pipex_bonus(t_pipex pipex, int fd[2])
 {
-	int	i;
-
-	i = cmd_num;
-	status = 0;
-	waitpid(pid[i--], &status, 0);
-	if (WIFEXITED(status))
-		status = WEXITSTATUS(status);
-	while (i >= 0)
-		waitpid(pid[i--], 0, 0);
-	free(pid);
-	return (status);
-}
-
-int	ft_pipex(t_pipex p, int fd[2])
-{
-	p.pid = malloc(sizeof(int) * (p.ac - p.i - 1));
-	p.filein = open(p.av[1], O_RDONLY, 0644);
-	if (p.filein == -1)
-		error(4, p.av[1], p.av[p.ac - 1]);
-	p.fileout = open(p.av[p.ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (p.fileout == -1)
-		error(3, p.av[1], p.av[p.ac - 1]);
-	if (pipe(fd) == -1)
-		exit(errno);
-	fork_pro(p.av[p.i++], p, p.k++, fd);
-	p.filein = fd[0];
-	return (last_cmd(p.av[p.ac - 2], p, p.env, fd));
+	if (ft_strcmp(pipex.av[1], "here_doc") == 0)
+		pipex = fop(2, pipex);
+	else
+		pipex = fop(1, pipex);
+	while (pipex.i < pipex.ac - 2)
+	{
+		if (pipe(fd) == -1)
+			exit(errno);
+		fork_pro(pipex.av[pipex.i++], pipex, pipex.k++, fd);
+		pipex.filein = fd[0];
+	}
+	return (last_cmd(pipex.av[pipex.ac - 2], pipex, pipex.env));
 }
 
 int	main(int ac, char *av[], char **env)
@@ -55,13 +40,14 @@ int	main(int ac, char *av[], char **env)
 	pipex.env = env;
 	pipex.i = 2;
 	pipex.k = 0;
-	if (ac == 5)
-		status = ft_pipex(pipex, fd);
+	if (ac >= 5 || (pipex.ac <= 5 && ft_strcmp(pipex.av[1], "here_doc") == 0))
+		status = ft_pipex_bonus(pipex, fd);
 	else
 	{
 		ft_putstr_fd("arg Error💀\n", 2);
 		exit(1);
 	}
 	ft_close(pipex.filein);
+	unlink(".here_doc");
 	return (status);
 }
