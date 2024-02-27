@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 01:16:23 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/27 16:45:14 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/27 17:30:33 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,16 +76,16 @@ void	fork_pro(char *av, t_pipex pipex, int k, int fd[2])
 	pipex.pid[k] = ft_fork();
 	if (pipex.pid[k] == 0)
 	{
+		ft_close(fd[0]);
+		ft_close(pipex.fileout);
 		if (av[0] == '\0')
 			error(5, NULL, NULL);
 		pipex.cmd = ft_split(av, ' ');
 		pipex.path = find_path(pipex.env, pipex.cmd[0], pipex);
 		ft_dup2(pipex.filein, STDIN_FILENO);
 		ft_dup2(fd[1], STDOUT_FILENO);
-		ft_close(fd[0]);
 		ft_close(fd[1]);
 		ft_close(pipex.filein);
-		ft_close(pipex.fileout);
 		execve(pipex.path, pipex.cmd, pipex.env);
 		if (pipex.path)
 			free(pipex.path);
@@ -102,7 +102,7 @@ int	last_cmd(char *av, t_pipex pipex, char **env, int fd[2])
 	if (pipex.pid[pipex.k] == 0)
 	{
 		if (av[0] == '\0')
-			error(5, NULL, NULL);
+			error(6, NULL, NULL);
 		pipex.cmd = ft_split(av, ' ');
 		pipex.path = find_path(env, pipex.cmd[0], pipex);
 		ft_dup2(pipex.filein, STDIN_FILENO);

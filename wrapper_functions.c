@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 20:19:57 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/27 16:47:01 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/27 17:41:03 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,12 @@ void	ft_dup2(int fd, int std)
 
 void	error(int cmd, char *ptr, char *p)
 {
-	if (cmd == 5)
+	if (cmd == 6 || cmd == 5)
 	{
 		ft_printf("zsh: permission denied:\n");
-		exit(126);
+		if (cmd == 6)
+			exit(126);
+		exit(0);
 	}
 	if (cmd == 4)
 		ft_printf("zsh: %s: %s\n", strerror(errno), ptr);
