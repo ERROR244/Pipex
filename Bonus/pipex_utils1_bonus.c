@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/10 15:41:40 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/27 13:42:40 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/27 17:16:44 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,24 +87,17 @@ void	here_doc(t_pipex pipex)
 	char	*p;
 
 	pipex.k++;
-	if (pipex.ac < 6)
-		exit(errno);
 	pipex.pid[0] = fork();
 	if (pipex.pid[0] == 0)
 	{
-		if (pipex.av[2][0] != '\0')
-			p = ft_strjoin1(pipex.av[2], "\n");
-		else
-			p = ft_strdup("");
-		ft_putstr_fd("pipe heredoc> ", 1);
+		p = ft_strjoin1(pipex.av[2], "\n");
+		ft_putstr_fd("pipe pipe heredoc> ", 1);
 		pipex.str = get_next_line(0);
 		while (pipex.str)
 		{
 			heredoc(pipex, p, pipex.env);
 			free(pipex.str);
-			if (p[0] == '\0')
-				break;
-			ft_putstr_fd("pipe heredoc> ", 1);
+			ft_putstr_fd("pipe pipe heredoc> ", 1);
 			pipex.str = get_next_line(0);
 		}
 		free(p);
