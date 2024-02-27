@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 20:19:57 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/26 16:13:04 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/27 14:01:01 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	ft_close(int fd)
 
 	n = close(fd);
 	if (n == -1)
-		exit();
+		exit(1);
 }
 
 int	ft_fork(void)

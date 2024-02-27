@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/03 01:16:23 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/26 14:23:14 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/27 14:42:40 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,10 +91,11 @@ void	fork_pro(char *av, t_pipex pipex, int k, int fd[2])
 		error(1, av, NULL);
 	}
 	ft_close(fd[1]);
-	ft_close(pipex.filein);
+	if (pipex.filein != -1)
+		ft_close(pipex.filein);
 }
 
-int	last_cmd(char *av, t_pipex pipex, char **env)
+int	last_cmd(char *av, t_pipex pipex, char **env, int fd[2])
 {
 	pipex.pid[pipex.k] = ft_fork();
 	if (pipex.pid[pipex.k] == 0)
@@ -111,6 +112,7 @@ int	last_cmd(char *av, t_pipex pipex, char **env)
 		free_array(pipex.cmd);
 		error(1, av, NULL);
 	}
+	ft_close(fd[0]);
 	ft_close(pipex.fileout);
 	return (wait_pid(pipex.pid, 0, pipex.k));
 }

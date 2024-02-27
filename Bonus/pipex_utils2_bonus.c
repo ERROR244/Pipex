@@ -6,7 +6,7 @@
 /*   By: ksohail- <ksohail-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 17:22:26 by ksohail-          #+#    #+#             */
-/*   Updated: 2024/02/26 15:47:03 by ksohail-         ###   ########.fr       */
+/*   Updated: 2024/02/27 14:14:33 by ksohail-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 
 void	heredoc(t_pipex pipex, char *p, char **env)
 {
-	if (!ft_strncmp(pipex.str, p, ft_strlen(pipex.str)))
+	if (!ft_strcmp(pipex.str, p))
 		error(2, pipex.str, p);
-	// ft_putstr_fd("pipe heredoc> ", 1);
 	if (d_is_in(pipex.str) != 0)
 		put_with_var(pipex.str, pipex.filein, env);
 	else

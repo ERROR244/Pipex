@@ -33,10 +33,10 @@ SRCB = 	Bonus/main_bonus.c Bonus/pipex_utils0_bonus.c Bonus/pipex_utils1_bonus.c
 OBS = ${SRC:.c=.o}
 OBSB = ${SRCB:.c=.o}
 
-CC = cc
+CC = cc #-fsanitize=address
 CFLAGS = -Wall -Wextra -Werror
 
-all : $(name)
+all : $(bonus) #$(name)
 
 $(name) : $(OBS)
 	touch in
@@ -64,6 +64,7 @@ fclean: clean
 	@rm -f $(bonus)
 
 re : fclean all
+reb : fclean bonus
 
 .SECONDARY : ${OBS} ${OBSB}
 .PHONY: all clean fclean re
